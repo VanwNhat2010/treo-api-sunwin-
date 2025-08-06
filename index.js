@@ -1,9 +1,14 @@
+const express = require('express');
 const axios = require('axios');
 
 // Địa chỉ API bạn cần gọi
 const API_URL = 'https://api-sunwin-vannhat-v5-1.onrender.com/api/sunwin/predict';
 // Thời gian chờ giữa mỗi lần gọi API (ví dụ: 10 giây)
-const INTERVAL_MS = 10000; 
+const INTERVAL_MS = 10000;
+const PORT = process.env.PORT || 3000;
+
+// Khởi tạo ứng dụng Express
+const app = express();
 
 // Hàm để gọi API và xử lý kết quả
 async function fetchData() {
@@ -34,5 +39,13 @@ function startPolling() {
     setInterval(fetchData, INTERVAL_MS);
 }
 
-// Bắt đầu chương trình
-startPolling();
+// Endpoint đơn giản để giữ cho dịch vụ luôn hoạt động
+app.get('/', (req, res) => {
+    res.send('Dịch vụ treo API đang chạy...');
+});
+
+// Lắng nghe trên một cổng
+app.listen(PORT, () => {
+    console.log(`Web server đang lắng nghe tại cổng ${PORT}`);
+    startPolling(); // Bắt đầu chương trình khi server khởi động
+});
